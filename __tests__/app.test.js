@@ -197,3 +197,143 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET - /api/articles", () => {
+  test("GET - status 200 - responds with an array of article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        const { articles } = res.body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              topic: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+});
+
+describe("GET - /api/articles", () => {
+  test("GET - status 200 - responds with an array of article objects sorted by date descending by default", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        const { articles } = res.body;
+        expect(articles[0]).toEqual({
+          author: "icellusedkars",
+          title: "Eight pug gifs that remind me of mitch",
+          article_id: 3,
+          body: "some gifs",
+          topic: "mitch",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 0,
+          comment_count: 0,
+        });
+      });
+  });
+});
+
+describe("GET - /api/articles", () => {
+  test("GET - status 400 - responds with invalid sort_by error message when an invalid column provided in the query part of the URL", () => {
+    return request(app)
+      .get("/api/articles?sort_by=nonsense")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Invalid sort_by column");
+      });
+  });
+});
+
+describe("GET - /api/articles", () => {
+  test("GET - status 400 - responds with invalid order error message when an invalid column provided in the query part of the URL", () => {
+    return request(app)
+      .get("/api/articles?order=flat")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toEqual("Invalid order provided");
+      });
+  });
+});
+
+describe("GET - /api/articles", () => {
+  test("GET - status 200 - responds with an array of article objects sorted by date descending by default filtered for topic of mitch", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((res) => {
+        const { articles } = res.body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(11);
+        expect(articles[0]).toEqual({
+          author: "icellusedkars",
+          title: "Eight pug gifs that remind me of mitch",
+          article_id: 3,
+          body: "some gifs",
+          topic: "mitch",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 0,
+          comment_count: 0,
+        });
+      });
+  });
+});
+
+describe("GET - /api/articles", () => {
+  test("GET - status 404 - responds with no articles found error message when an invalid topic provided in the query part of the URL", () => {
+    return request(app)
+      .get("/api/articles?topic=dog")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toEqual("No articles found");
+      });
+  });
+});
+
+describe("GET - /api/articles", () => {
+  test("GET - status 200 - responds with an empty array for valid topic of paper with no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then((res) => {
+        const { articles } = res.body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(0);
+      });
+  });
+});
+
+describe("GET - /api/articles", () => {
+  test("GET - status 200 - responds with an array of article objects sorted by title ascending filtered for topic of mitch", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=title&order=asc")
+      .expect(200)
+      .then((res) => {
+        const { articles } = res.body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(11);
+        expect(articles[0]).toEqual({
+          author: "icellusedkars",
+          title: "A",
+          article_id: 6,
+          body: "Delicious tin of cat food",
+          topic: "mitch",
+          created_at: "2020-10-18T01:00:00.000Z",
+          votes: 0,
+          comment_count: 1,
+        });
+      });
+  });
+});
