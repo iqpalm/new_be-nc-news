@@ -28,6 +28,7 @@ describe("GET - /api/topics", () => {
       });
   });
 });
+
 describe("GET - /*", () => {
   test("GET - status 404 path not found- ", () => {
     return request(app)
@@ -45,7 +46,6 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then((res) => {
-        //const date = new Date(1594329060000);
         expect(res.body).toEqual({
           article: [
             {
@@ -57,6 +57,140 @@ describe("GET /api/articles/:article_id", () => {
               created_at: "2020-07-09T20:11:00.000Z",
               votes: 100,
               comment_count: 13,
+            },
+          ],
+        });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id", () => {
+  test("GET - status 200 - responds with an article object even when no comments with comment_count = 0", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({
+          article: [
+            {
+              author: "icellusedkars",
+              title: "Sony Vaio; or, The Laptop",
+              article_id: 2,
+              body: "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+              topic: "mitch",
+              created_at: "2020-10-16T05:03:00.000Z",
+              votes: 0,
+              comment_count: 0,
+            },
+          ],
+        });
+      });
+  });
+});
+
+describe("GET /api/articles/somethingwrong", () => {
+  test("GET - status 400 bad request- ", () => {
+    return request(app)
+      .get("/api/articles/somethingwrong")
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "Bad request - invalid type used in URL",
+        });
+      });
+  });
+});
+
+describe("GET /api/articles/99999", () => {
+  test("GET - status No article found for article_id- ", () => {
+    return request(app)
+      .get("/api/articles/99999")
+      .expect(404)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "No article found for article_id: 99999",
+        });
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH - status 200 - responds with an updated article object", () => {
+    const articleUpdates = { inc_votes: 10 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleUpdates)
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({
+          article: [
+            {
+              author: "butter_bridge",
+              title: "Living in the shadow of a great man",
+              article_id: 1,
+              body: "I find this existence challenging",
+              topic: "mitch",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 110,
+            },
+          ],
+        });
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH - status 400 - responds with an error when no inc_votes in request body", () => {
+    const articleUpdates = { cats: 10 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleUpdates)
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "Bad request data provided is incorrect",
+        });
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH - status 400 - responds with an error when inc_votes in request body but not a number", () => {
+    const articleUpdates = { inc_votes: "cat" };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleUpdates)
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "Bad request - invalid type used in URL",
+        });
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH - status 200 - responds with an updated article object even with additional properties in body", () => {
+    const articleUpdates = { inc_votes: 10, name: "Mitch" };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(articleUpdates)
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual({
+          article: [
+            {
+              author: "butter_bridge",
+              title: "Living in the shadow of a great man",
+              article_id: 1,
+              body: "I find this existence challenging",
+              topic: "mitch",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 110,
             },
           ],
         });

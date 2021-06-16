@@ -1,13 +1,17 @@
 exports.customErrors = (err, req, res, next) => {
   if (err.status) {
-    res.status(err.status).send(err.msg);
+    res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);
   }
 };
 
 exports.handlePSQLErrors = (err, req, res, next) => {
-  next(err);
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "Bad request - invalid type used in URL" });
+  } else {
+    next(err);
+  }
 };
 
 exports.handle500Errors = (err, req, res, next) => {
