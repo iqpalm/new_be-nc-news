@@ -89,3 +89,24 @@ exports.selectArticles = async (
 
   return results.rows;
 };
+
+exports.selectCommentsByArticleId = async (article_id) => {
+  const results = await db.query(
+    `SELECT comment_id,votes,created_at,author,body FROM comments WHERE article_id = $1;`,
+    [article_id]
+  );
+
+  if (results.rows.length === 0) {
+    const articleIdResult = await db.query(
+      "SELECT * FROM articles WHERE article_id = $1",
+      [article_id]
+    );
+    if (articleIdResult.rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `No article found for article_id: ${article_id}`,
+      });
+    }
+  }
+  return results.rows;
+};

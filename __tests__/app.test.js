@@ -242,6 +242,7 @@ describe("GET - /api/articles", () => {
           votes: 0,
           comment_count: 0,
         });
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
@@ -287,6 +288,7 @@ describe("GET - /api/articles", () => {
           votes: 0,
           comment_count: 0,
         });
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
@@ -334,6 +336,72 @@ describe("GET - /api/articles", () => {
           votes: 0,
           comment_count: 1,
         });
+        expect(articles).toBeSortedBy("title");
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("GET - status 200 - responds with an array of comment objects for provided article id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .expect(200)
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(13);
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+});
+
+describe("GET /api/articles/somethingwrong/comments", () => {
+  test("GET - status 400 bad request- ", () => {
+    return request(app)
+      .get("/api/articles/somethingwrong/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "Bad request - invalid type used in URL",
+        });
+      });
+  });
+});
+
+describe("GET /api/articles/99999/comments", () => {
+  test("GET - status No article found for article_id- ", () => {
+    return request(app)
+      .get("/api/articles/99999/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "No article found for article_id: 99999",
+        });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("GET - status 200 - responds with an empty array for provided article id with no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .expect(200)
+      .then((res) => {
+        const { comments } = res.body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
       });
   });
 });
