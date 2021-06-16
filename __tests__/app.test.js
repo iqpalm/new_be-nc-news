@@ -397,11 +397,27 @@ describe("GET /api/articles/:article_id/comments", () => {
     return request(app)
       .get("/api/articles/2/comments")
       .expect(200)
-      .expect(200)
       .then((res) => {
         const { comments } = res.body;
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(0);
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST - status 200 - responds with comment newly added to database", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "The click is inevitable",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then((res) => {
+        const { comment } = res.body;
+        expect(comment).toEqual({ comment_id: 19, ...newComment });
       });
   });
 });

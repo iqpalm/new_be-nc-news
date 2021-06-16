@@ -110,3 +110,25 @@ exports.selectCommentsByArticleId = async (article_id) => {
   }
   return results.rows;
 };
+
+exports.addCommentByArticleId = async (article_id, newComment) => {
+  const { username, body } = newComment;
+  const results = await db.query(
+    `INSERT INTO comments (author,article_id,body) VALUES($1,$2,$3) RETURNING *;`,
+    [username, article_id, body]
+  );
+
+  if (results.rows.length === 0) {
+    const articleIdResult = await db.query(
+      "SELECT * FROM articles WHERE article_id = $1",
+      [article_id]
+    );
+    if (articleIdResult.rows.length === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: `No article found for article_id: ${article_id}`,
+      });
+    }
+  }
+  return results.rows;
+};
