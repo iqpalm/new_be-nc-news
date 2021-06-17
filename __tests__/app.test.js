@@ -140,6 +140,36 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+describe("PATCH /api/articles/somethingwrong", () => {
+  test("PATCH - status 400 bad request- ", () => {
+    const articleUpdates = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/articles/somethingwrong")
+      .send(articleUpdates)
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "Bad request - invalid type used in URL",
+        });
+      });
+  });
+});
+
+describe("PATCH /api/articles/99999", () => {
+  test("PATCH - status 400 bad request- ", () => {
+    const articleUpdates = { inc_votes: 10 };
+    return request(app)
+      .patch("/api/articles/99999")
+      .send(articleUpdates)
+      .expect(404)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "No article found for article_id: 99999",
+        });
+      });
+  });
+});
+
 describe("PATCH /api/articles/:article_id", () => {
   test("PATCH - status 400 - responds with an error when no inc_votes in request body", () => {
     const articleUpdates = { cats: 10 };
@@ -299,7 +329,7 @@ describe("GET - /api/articles", () => {
       .get("/api/articles?topic=dog")
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toEqual("No articles found");
+        expect(res.body.msg).toEqual("No articles found check filters");
       });
   });
 });

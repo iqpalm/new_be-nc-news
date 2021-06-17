@@ -82,7 +82,7 @@ exports.selectArticles = async (
     if (topicResult.rows.length === 0) {
       return Promise.reject({
         status: 404,
-        msg: `No articles found`,
+        msg: `No articles found check filters`,
       });
     }
   }
