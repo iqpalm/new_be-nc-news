@@ -417,7 +417,56 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(201)
       .then((res) => {
         const { comment } = res.body;
-        expect(comment).toEqual({ comment_id: 19, ...newComment });
+        const commentObject = comment[0];
+        expect(commentObject).toHaveProperty("comment_id", 19);
+        expect(commentObject).toHaveProperty("author", "icellusedkars");
+        expect(commentObject).toHaveProperty("body", "The click is inevitable");
+        expect(commentObject).toHaveProperty("article_id", 2);
+        expect(commentObject).toHaveProperty("votes", 0);
+      });
+  });
+});
+
+describe("POST /api/articles/somethingwrong/comments", () => {
+  test("POST - status 400 bad request- ", () => {
+    return request(app)
+      .post("/api/articles/somethingwrong/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "Bad request - invalid type used in URL",
+        });
+      });
+  });
+});
+
+describe("POST /api/articles/99999/comments", () => {
+  test("POST - status No article found for article_id- ", () => {
+    return request(app)
+      .post("/api/articles/99999/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "No article found for article_id: 99999",
+        });
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST - status 400 - when new comment does not contain the required data", () => {
+    const newComment = {
+      dog: "icellusedkars",
+      text: "The click is inevitable",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "Correct data not provided",
+        });
       });
   });
 });
