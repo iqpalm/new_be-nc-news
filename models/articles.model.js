@@ -126,6 +126,17 @@ exports.addCommentByArticleId = async (article_id, newComment) => {
   const { username, body } = newComment;
 
   if (username && body) {
+    const usernameResult = await db.query(
+      "SELECT * FROM users WHERE username = $1",
+      [username]
+    );
+    if (usernameResult.rows.length === 0) {
+      return Promise.reject({
+        status: 400,
+        msg: `User ${username} is not recognised`,
+      });
+    }
+
     const results = await db.query(
       `INSERT INTO comments (author,article_id,body) VALUES($1,$2,$3) RETURNING *;`,
       [username, article_id, body]

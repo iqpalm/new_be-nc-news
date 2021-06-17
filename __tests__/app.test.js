@@ -406,7 +406,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST /api/articles/:article_id/comments", () => {
-  test("POST - status 200 - responds with comment newly added to database", () => {
+  test("POST - status 200 - responds with comment newly added to database from existing user", () => {
     const newComment = {
       username: "icellusedkars",
       body: "The click is inevitable",
@@ -423,6 +423,24 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(commentObject).toHaveProperty("body", "The click is inevitable");
         expect(commentObject).toHaveProperty("article_id", 2);
         expect(commentObject).toHaveProperty("votes", 0);
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST - status 400 - responds with error from new user not setup in database", () => {
+    const newComment = {
+      username: "Bernard",
+      body: "The click is inevitable",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual({
+          msg: "User Bernard is not recognised",
+        });
       });
   });
 });
@@ -466,6 +484,120 @@ describe("POST /api/articles/:article_id/comments", () => {
       .then((res) => {
         expect(res.body).toEqual({
           msg: "Correct data not provided",
+        });
+      });
+  });
+});
+
+describe("GET - /api", () => {
+  test("GET - status 200 - responds with an object of endpoint objects", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then((res) => {
+        const { endPoints } = res.body;
+        expect(endPoints).toEqual({
+          "GET /api": {
+            description:
+              "serves up a json representation of all the available endpoints of the api",
+          },
+          "GET /api/topics": {
+            description: "serves an array of all topics",
+            queries: [],
+            exampleResponse: {
+              topics: [{ slug: "football", description: "Footie!" }],
+            },
+          },
+          "GET /api/articles": {
+            description: "serves an array of all topics",
+            queries: ["author", "topic", "sort_by", "order"],
+            exampleResponse: {
+              articles: [
+                {
+                  title: "Seafood substitutions are increasing",
+                  topic: "cooking",
+                  author: "weegembump",
+                  body: "Text from the article..",
+                  created_at: 1527695953341,
+                },
+              ],
+            },
+          },
+          "GET /api/articles/:article_id": {
+            description:
+              "serves an array of one article with the corresponding article_id",
+            params: ["article_id"],
+            exampleResponse: {
+              article: [
+                {
+                  title: "Seafood substitutions are increasing",
+                  topic: "cooking",
+                  author: "weegembump",
+                  body: "Text from the article..",
+                  created_at: 1527695953341,
+                  article_id: 12,
+                  votes: 10,
+                  comment_count: 10,
+                },
+              ],
+            },
+          },
+          "PATCH /api/articles/:article_id": {
+            description:
+              "serves an array of one updated article with the corresponding article_id with the votes amended",
+            params: ["article_id"],
+            request: { inc_votes: 10 },
+            exampleResponse: {
+              article: [
+                {
+                  title: "Seafood substitutions are increasing",
+                  topic: "cooking",
+                  author: "weegembump",
+                  body: "Text from the article..",
+                  created_at: 1527695953341,
+                  article_id: 12,
+                  votes: 10,
+                },
+              ],
+            },
+          },
+          "GET /api/articles/:article_id/comments": {
+            description:
+              "serves an array of comments for the corresponding article_id",
+            params: ["article_id"],
+            exampleResponse: {
+              article: [
+                {
+                  comment_id: 12,
+                  author: "weegembump",
+                  body: "Text from the article..",
+                  created_at: 1527695953341,
+                  votes: 10,
+                },
+              ],
+            },
+          },
+          "POST /api/articles/:article_id/comments": {
+            description:
+              "serves an array of comment for the corresponding article_id",
+            params: ["article_id"],
+            request: {
+              username: "icellusedkars",
+              body: "The click is inevitable",
+            },
+            exampleResponse: {
+              article: [
+                {
+                  comment_id: 12,
+                  author: "weegembump",
+                  body: "Text from the article..",
+                  article_id: 2,
+                  created_at: 1527695953341,
+                  votes: 0,
+                },
+              ],
+            },
+          },
         });
       });
   });
