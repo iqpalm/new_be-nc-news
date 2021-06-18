@@ -632,3 +632,9 @@ describe("GET - /api", () => {
       });
   });
 });
+
+describe("4. DELETE /api/comments/:comment_id", () => {
+  test("status:204, responds with an empty response body", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+});
