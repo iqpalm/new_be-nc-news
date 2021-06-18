@@ -7,7 +7,8 @@ const commentsRouter = require("./comments.router");
 const { getEndpoints } = require("../controllers/api.controllers");
 const apiRouter = express.Router();
 
-apiRouter.get("/", getEndpoints);
+apiRouter.route("/").get(getEndpoints);
+
 apiRouter.use("/topics", topicsRouter);
 apiRouter.use("/articles", articlesRouter);
 apiRouter.use("/comments", commentsRouter);

@@ -1,4 +1,4 @@
-exports.selectEndpoints = async (article_id) => {
+exports.selectEndpoints = async () => {
   const endPoints = {
     "GET /api": {
       description:

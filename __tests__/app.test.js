@@ -62,9 +62,7 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
-});
 
-describe("GET /api/articles/:article_id", () => {
   test("GET - status 200 - responds with an article object even when no comments with comment_count = 0", () => {
     return request(app)
       .get("/api/articles/2")
@@ -86,31 +84,31 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
-});
 
-describe("GET /api/articles/somethingwrong", () => {
-  test("GET - status 400 bad request- ", () => {
-    return request(app)
-      .get("/api/articles/somethingwrong")
-      .expect(400)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "Bad request - invalid type used in URL",
+  describe("GET /api/articles/somethingwrong", () => {
+    test("GET - status 400 bad request- ", () => {
+      return request(app)
+        .get("/api/articles/somethingwrong")
+        .expect(400)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "Bad request - invalid type used in URL",
+          });
         });
-      });
+    });
   });
-});
 
-describe("GET /api/articles/99999", () => {
-  test("GET - status No article found for article_id- ", () => {
-    return request(app)
-      .get("/api/articles/99999")
-      .expect(404)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "No article found for article_id: 99999",
+  describe("GET /api/articles/99999", () => {
+    test("GET - status No article found for article_id- ", () => {
+      return request(app)
+        .get("/api/articles/99999")
+        .expect(404)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "No article found for article_id: 99999",
+          });
         });
-      });
+    });
   });
 });
 
@@ -138,35 +136,35 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
-});
 
-describe("PATCH /api/articles/somethingwrong", () => {
-  test("PATCH - status 400 bad request- ", () => {
-    const articleUpdates = { inc_votes: 10 };
-    return request(app)
-      .patch("/api/articles/somethingwrong")
-      .send(articleUpdates)
-      .expect(400)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "Bad request - invalid type used in URL",
+  describe("PATCH /api/articles/somethingwrong", () => {
+    test("PATCH - status 400 bad request- ", () => {
+      const articleUpdates = { inc_votes: 10 };
+      return request(app)
+        .patch("/api/articles/somethingwrong")
+        .send(articleUpdates)
+        .expect(400)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "Bad request - invalid type used in URL",
+          });
         });
-      });
+    });
   });
-});
 
-describe("PATCH /api/articles/99999", () => {
-  test("PATCH - status 400 bad request- ", () => {
-    const articleUpdates = { inc_votes: 10 };
-    return request(app)
-      .patch("/api/articles/99999")
-      .send(articleUpdates)
-      .expect(404)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "No article found for article_id: 99999",
+  describe("PATCH /api/articles/99999", () => {
+    test("PATCH - status 400 bad request- ", () => {
+      const articleUpdates = { inc_votes: 10 };
+      return request(app)
+        .patch("/api/articles/99999")
+        .send(articleUpdates)
+        .expect(404)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "No article found for article_id: 99999",
+          });
         });
-      });
+    });
   });
 });
 
@@ -253,9 +251,7 @@ describe("GET - /api/articles", () => {
         });
       });
   });
-});
 
-describe("GET - /api/articles", () => {
   test("GET - status 200 - responds with an array of article objects sorted by date descending by default", () => {
     return request(app)
       .get("/api/articles")
@@ -275,9 +271,7 @@ describe("GET - /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-});
 
-describe("GET - /api/articles", () => {
   test("GET - status 400 - responds with invalid sort_by error message when an invalid column provided in the query part of the URL", () => {
     return request(app)
       .get("/api/articles?sort_by=nonsense")
@@ -286,9 +280,7 @@ describe("GET - /api/articles", () => {
         expect(res.body.msg).toEqual("Invalid sort_by column");
       });
   });
-});
 
-describe("GET - /api/articles", () => {
   test("GET - status 400 - responds with invalid order error message when an invalid column provided in the query part of the URL", () => {
     return request(app)
       .get("/api/articles?order=flat")
@@ -297,9 +289,7 @@ describe("GET - /api/articles", () => {
         expect(res.body.msg).toEqual("Invalid order provided");
       });
   });
-});
 
-describe("GET - /api/articles", () => {
   test("GET - status 200 - responds with an array of article objects sorted by date descending by default filtered for topic of mitch", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
@@ -321,9 +311,7 @@ describe("GET - /api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-});
 
-describe("GET - /api/articles", () => {
   test("GET - status 404 - responds with no articles found error message when an invalid topic provided in the query part of the URL", () => {
     return request(app)
       .get("/api/articles?topic=dog")
@@ -332,9 +320,7 @@ describe("GET - /api/articles", () => {
         expect(res.body.msg).toEqual("No articles found check filters");
       });
   });
-});
 
-describe("GET - /api/articles", () => {
   test("GET - status 200 - responds with an empty array for valid topic of paper with no articles", () => {
     return request(app)
       .get("/api/articles?topic=paper")
@@ -345,9 +331,7 @@ describe("GET - /api/articles", () => {
         expect(articles).toHaveLength(0);
       });
   });
-});
 
-describe("GET - /api/articles", () => {
   test("GET - status 200 - responds with an array of article objects sorted by title ascending filtered for topic of mitch", () => {
     return request(app)
       .get("/api/articles?topic=mitch&sort_by=title&order=asc")
@@ -394,35 +378,33 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
-});
 
-describe("GET /api/articles/somethingwrong/comments", () => {
-  test("GET - status 400 bad request- ", () => {
-    return request(app)
-      .get("/api/articles/somethingwrong/comments")
-      .expect(400)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "Bad request - invalid type used in URL",
+  describe("GET /api/articles/somethingwrong/comments", () => {
+    test("GET - status 400 bad request- ", () => {
+      return request(app)
+        .get("/api/articles/somethingwrong/comments")
+        .expect(400)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "Bad request - invalid type used in URL",
+          });
         });
-      });
+    });
   });
-});
 
-describe("GET /api/articles/99999/comments", () => {
-  test("GET - status No article found for article_id- ", () => {
-    return request(app)
-      .get("/api/articles/99999/comments")
-      .expect(404)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "No article found for article_id: 99999",
+  describe("GET /api/articles/99999/comments", () => {
+    test("GET - status No article found for article_id- ", () => {
+      return request(app)
+        .get("/api/articles/99999/comments")
+        .expect(404)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "No article found for article_id: 99999",
+          });
         });
-      });
+    });
   });
-});
 
-describe("GET /api/articles/:article_id/comments", () => {
   test("GET - status 200 - responds with an empty array for provided article id with no comments", () => {
     return request(app)
       .get("/api/articles/2/comments")
@@ -455,9 +437,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(commentObject).toHaveProperty("votes", 0);
       });
   });
-});
 
-describe("POST /api/articles/:article_id/comments", () => {
   test("POST - status 400 - responds with error from new user not setup in database", () => {
     const newComment = {
       username: "Bernard",
@@ -473,35 +453,33 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
       });
   });
-});
 
-describe("POST /api/articles/somethingwrong/comments", () => {
-  test("POST - status 400 bad request- ", () => {
-    return request(app)
-      .post("/api/articles/somethingwrong/comments")
-      .expect(400)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "Bad request - invalid type used in URL",
+  describe("POST /api/articles/somethingwrong/comments", () => {
+    test("POST - status 400 bad request- ", () => {
+      return request(app)
+        .post("/api/articles/somethingwrong/comments")
+        .expect(400)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "Bad request - invalid type used in URL",
+          });
         });
-      });
+    });
   });
-});
 
-describe("POST /api/articles/99999/comments", () => {
-  test("POST - status No article found for article_id- ", () => {
-    return request(app)
-      .post("/api/articles/99999/comments")
-      .expect(404)
-      .then((res) => {
-        expect(res.body).toEqual({
-          msg: "No article found for article_id: 99999",
+  describe("POST /api/articles/99999/comments", () => {
+    test("POST - status No article found for article_id- ", () => {
+      return request(app)
+        .post("/api/articles/99999/comments")
+        .expect(404)
+        .then((res) => {
+          expect(res.body).toEqual({
+            msg: "No article found for article_id: 99999",
+          });
         });
-      });
+    });
   });
-});
 
-describe("POST /api/articles/:article_id/comments", () => {
   test("POST - status 400 - when new comment does not contain the required data", () => {
     const newComment = {
       dog: "icellusedkars",
@@ -633,7 +611,7 @@ describe("GET - /api", () => {
   });
 });
 
-describe("4. DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("status:204, responds with an empty response body", () => {
     return request(app).delete("/api/comments/2").expect(204);
   });

@@ -20,6 +20,6 @@ articlesRouter
   .get(getCommentsByArticleId)
   .post(postCommentByArticleId);
 
-articlesRouter.get("/", getArticles);
+articlesRouter.route("/").get(getArticles);
 
 module.exports = articlesRouter;

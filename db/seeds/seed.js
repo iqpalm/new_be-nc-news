@@ -24,7 +24,7 @@ const seed = async (data) => {
     "CREATE TABLE articles (article_id SERIAL PRIMARY KEY, title TEXT NOT NULL, body TEXT NOT NULL, votes INT DEFAULT '0', topic TEXT REFERENCES topics (slug), author TEXT REFERENCES users (username), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);"
   );
   await db.query(
-    "CREATE TABLE comments (comment_id SERIAL PRIMARY KEY, author TEXT REFERENCES users(username), article_id INT REFERENCES articles (article_id), votes INT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, body TEXT NOT NULL)"
+    "CREATE TABLE comments (comment_id SERIAL PRIMARY KEY, author TEXT REFERENCES users(username), article_id INT REFERENCES articles (article_id) ON DELETE CASCADE, votes INT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, body TEXT NOT NULL)"
   );
 
   const mappedTopicsData = mappedTopics(topicData);
