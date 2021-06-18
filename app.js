@@ -2,6 +2,8 @@ const express = require("express");
 
 const apiRouter = require("./routes/api.router");
 
+const { getStatus } = require("./controllers/home.controller");
+
 const {
   customErrors,
   handle500Errors,
@@ -13,6 +15,7 @@ const app = express();
 
 app.use(express.json());
 
+app.route("/").get(getStatus);
 app.use("/api", apiRouter);
 
 app.use(send404);
