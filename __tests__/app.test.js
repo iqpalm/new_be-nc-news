@@ -517,16 +517,19 @@ describe("GET - /api", () => {
             },
           },
           "GET /api/articles": {
-            description: "serves an array of all topics",
-            queries: ["author", "topic", "sort_by", "order"],
+            description: "serves an array of all articles",
+            queries: ["topic", "sort_by", "order"],
             exampleResponse: {
               articles: [
                 {
+                  article_id: 10,
                   title: "Seafood substitutions are increasing",
                   topic: "cooking",
                   author: "weegembump",
                   body: "Text from the article..",
+                  votes: 0,
                   created_at: 1527695953341,
+                  commment_count: 0,
                 },
               ],
             },
